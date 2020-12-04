@@ -1,4 +1,4 @@
-package java_othello;
+
 
 public class Frame {
 	
