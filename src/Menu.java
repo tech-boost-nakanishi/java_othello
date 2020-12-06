@@ -18,8 +18,10 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener {
 	private final int width = 640, height = 360;
 	private Ellipse2D startEllipse, settingEllipse, quitEllipse;
 	private String hoveredEllipse = "";
+	public Frame frame;
 	
-	public Menu() {
+	public Menu(Frame frame) {
+		this.frame = frame;
 		this.setPreferredSize(new Dimension(width, height));
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
@@ -94,7 +96,16 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		
+		Rectangle mouseRect = new Rectangle(e.getX(), e.getY(), 1, 1);
+		if(mouseRect.intersects(startEllipse.getX(), startEllipse.getY(), startEllipse.getWidth(), startEllipse.getHeight())) {
+			frame.changePanel("gamePanel");
+		}
+		else if(mouseRect.intersects(settingEllipse.getX(), settingEllipse.getY(), settingEllipse.getWidth(), settingEllipse.getHeight())) {
+			frame.changePanel("settingPanel");
+		}
+		else if(mouseRect.intersects(quitEllipse.getX(), quitEllipse.getY(), quitEllipse.getWidth(), quitEllipse.getHeight())) {
+			System.exit(1);
+		}
 	}
 
 	@Override

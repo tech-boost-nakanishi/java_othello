@@ -13,7 +13,7 @@ public class Frame {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		
-		menuPanel = new Menu();
+		menuPanel = new Menu(this);
 		settingPanel = new Setting();
 		frame.getContentPane().add(menuPanel);
 		
@@ -26,7 +26,7 @@ public class Frame {
 		frame.remove(settingPanel);
 		
 		if(str.equals("menuPanel")) {
-			menuPanel = new Menu();
+			menuPanel = new Menu(this);
 			frame.getContentPane().add(menuPanel);
 		}
 		else if(str.equals("settingPanel")) {
