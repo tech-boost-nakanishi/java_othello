@@ -18,7 +18,7 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener {
 	private final int width = 640, height = 360;
 	private Ellipse2D startEllipse, settingEllipse, quitEllipse;
 	private String hoveredEllipse = "";
-	public Frame frame;
+	private Frame frame;
 	
 	public Menu(Frame frame) {
 		this.frame = frame;
