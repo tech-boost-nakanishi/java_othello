@@ -3,7 +3,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -65,6 +64,26 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener {
 			g2d.drawString("ゲーム終了", (int)quitEllipse.getX() + 25, (int)quitEllipse.getY() + 40);
 		}
 	}
+	
+	public boolean MouseOnOval(int mx, int my, Ellipse2D ell) {
+		int a = (int) ell.getWidth() / 2;
+		int b = (int) ell.getHeight() / 2;
+		int c = (int) Math.sqrt(a*a - b*b);
+		int centerX = (int) ell.getX() + a;
+		int centerY = (int) ell.getY() + b;
+		int fx1 = centerX - c;
+		int fx2 = centerX + c;
+		int kijun = (int) Math.sqrt(c*c + b*b) * 2;
+		int aa = Math.abs(mx - fx1);
+		int bb = Math.abs(my - centerY);
+		int cc = (int) Math.sqrt(aa*aa + bb*bb);
+		aa = Math.abs(mx - fx2);
+		cc += (int) Math.sqrt(aa*aa + bb*bb);
+		if(kijun >= cc) {
+			return true;
+		}
+		return false;
+	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -73,14 +92,15 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		Rectangle mouseRect = new Rectangle(e.getX(), e.getY(), 1, 1);
-		if(mouseRect.intersects(startEllipse.getX(), startEllipse.getY(), startEllipse.getWidth(), startEllipse.getHeight())) {
+		int mx = e.getX();
+		int my = e.getY();
+		if(MouseOnOval(mx, my, startEllipse)) {
 			hoveredEllipse = "startEllipse";
 		}
-		else if(mouseRect.intersects(settingEllipse.getX(), settingEllipse.getY(), settingEllipse.getWidth(), settingEllipse.getHeight())) {
+		else if(MouseOnOval(mx, my, settingEllipse)) {
 			hoveredEllipse = "settingEllipse";
 		}
-		else if(mouseRect.intersects(quitEllipse.getX(), quitEllipse.getY(), quitEllipse.getWidth(), quitEllipse.getHeight())) {
+		else if(MouseOnOval(mx, my, quitEllipse)) {
 			hoveredEllipse = "quitEllipse";
 		}
 		else {
@@ -96,14 +116,15 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		Rectangle mouseRect = new Rectangle(e.getX(), e.getY(), 1, 1);
-		if(mouseRect.intersects(startEllipse.getX(), startEllipse.getY(), startEllipse.getWidth(), startEllipse.getHeight())) {
+		int mx = e.getX();
+		int my = e.getY();
+		if(MouseOnOval(mx, my, startEllipse)) {
 			frame.changePanel("gamePanel");
 		}
-		else if(mouseRect.intersects(settingEllipse.getX(), settingEllipse.getY(), settingEllipse.getWidth(), settingEllipse.getHeight())) {
+		else if(MouseOnOval(mx, my, settingEllipse)) {
 			frame.changePanel("settingPanel");
 		}
-		else if(mouseRect.intersects(quitEllipse.getX(), quitEllipse.getY(), quitEllipse.getWidth(), quitEllipse.getHeight())) {
+		else if(MouseOnOval(mx, my, quitEllipse)) {
 			System.exit(1);
 		}
 	}

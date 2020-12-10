@@ -3,11 +3,16 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -20,21 +25,26 @@ public class Setting extends JPanel implements MouseListener, MouseMotionListene
 	private Ellipse2D menuEllipse, changeEllipse;
 	private String hoveredEllipse = "";
 	private Frame frame;
+	private Menu menu;
+	private boolean isChanged = false;
+	private String faorsa, blackorwhite;
+	private static JComboBox<Object> faorsacombo, blackorwhitecombo;
 	
-	public Setting(Frame frame) {
+	public Setting(Frame frame, Menu menu) {
 		this.frame = frame;
+		this.menu = menu;
 		this.setPreferredSize(new Dimension(width, height));
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		this.setLayout(null);
 		
 		String[] faorsacombostr = {"先攻", "後攻"};
-		JComboBox<Object> faorsacombo = new JComboBox<Object>(faorsacombostr);
+		faorsacombo = new JComboBox<Object>(faorsacombostr);
 		faorsacombo.setBounds(280, 120, 100, 40);
 		this.add(faorsacombo);
 		
 		String[] blackorwhitecombostr = {"黒", "白"};
-		JComboBox<Object> blackorwhitecombo = new JComboBox<Object>(blackorwhitecombostr);
+		blackorwhitecombo = new JComboBox<Object>(blackorwhitecombostr);
 		blackorwhitecombo.setBounds(280, 210, 100, 40);
 		this.add(blackorwhitecombo);
 		
@@ -75,6 +85,47 @@ public class Setting extends JPanel implements MouseListener, MouseMotionListene
 			g2d.drawString("変更", (int)changeEllipse.getX() + 38, (int)changeEllipse.getY() + 35);
 		}
 	}
+	
+	public void changeSetting() {
+		try {
+			File file = new File("res/setting.txt");
+			if(!file.exists()) {
+				file.createNewFile();
+				BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+				faorsa = "fa";
+				blackorwhite = "black";
+				bw.write(faorsa + " " + blackorwhite);
+				bw.close();
+			}
+			else {
+				if(isChanged) {
+					file.delete();
+					file.createNewFile();
+					BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+					int num = faorsacombo.getSelectedIndex();
+					if(num == 0) faorsa = "fa";
+					else if(num == 1) faorsa = "sa";
+					num = blackorwhitecombo.getSelectedIndex();
+					if(num == 0) blackorwhite = "black";
+					else if(num == 1) blackorwhite = "white";
+					bw.write(faorsa + " " + blackorwhite);
+					bw.close();
+				}
+				else {
+					BufferedReader br = new BufferedReader(new FileReader(file));
+					String data = br.readLine();
+					String[] datasplit = data.split(" ");
+					faorsa = datasplit[0];
+					blackorwhite = datasplit[1];
+					br.close();
+				}
+			}
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+		isChanged = false;
+	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -83,11 +134,12 @@ public class Setting extends JPanel implements MouseListener, MouseMotionListene
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		Rectangle mouseRect = new Rectangle(e.getX(), e.getY(), 1, 1);
-		if(mouseRect.intersects(menuEllipse.getX(), menuEllipse.getY(), menuEllipse.getWidth(), menuEllipse.getHeight())) {
+		int mx = e.getX();
+		int my = e.getY();
+		if(menu.MouseOnOval(mx, my, menuEllipse)) {
 			hoveredEllipse = "menuEllipse";
 		}
-		else if(mouseRect.intersects(changeEllipse.getX(), changeEllipse.getY(), changeEllipse.getWidth(), changeEllipse.getHeight())) {
+		else if(menu.MouseOnOval(mx, my, changeEllipse)) {
 			hoveredEllipse = "changeEllipse";
 		}
 		else {
@@ -103,12 +155,15 @@ public class Setting extends JPanel implements MouseListener, MouseMotionListene
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		Rectangle mouseRect = new Rectangle(e.getX(), e.getY(), 1, 1);
-		if(mouseRect.intersects(menuEllipse.getX(), menuEllipse.getY(), menuEllipse.getWidth(), menuEllipse.getHeight())) {
+		int mx = e.getX();
+		int my = e.getY();
+		if(menu.MouseOnOval(mx, my, menuEllipse)) {
 			frame.changePanel("menuPanel");
 		}
-		else if(mouseRect.intersects(changeEllipse.getX(), changeEllipse.getY(), changeEllipse.getWidth(), changeEllipse.getHeight())) {
-			
+		else if(menu.MouseOnOval(mx, my, changeEllipse)) {
+			isChanged = true;
+			changeSetting();
+			frame.changePanel("menuPanel");
 		}
 	}
 

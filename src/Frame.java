@@ -14,7 +14,7 @@ public class Frame {
 		frame.setResizable(false);
 		
 		menuPanel = new Menu(this);
-		settingPanel = new Setting(this);
+		settingPanel = new Setting(this, menuPanel);
 		frame.getContentPane().add(menuPanel);
 		
 		frame.pack();
@@ -30,7 +30,7 @@ public class Frame {
 			frame.getContentPane().add(menuPanel);
 		}
 		else if(str.equals("settingPanel")) {
-			settingPanel = new Setting(this);
+			settingPanel = new Setting(this, menuPanel);
 			frame.getContentPane().add(settingPanel);
 		}
 		
