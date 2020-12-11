@@ -6,6 +6,7 @@ public class Frame {
 	
 	Menu menuPanel;
 	Setting settingPanel;
+	Game gamePanel;
 	
 	public Frame() {
 		frame = new JFrame();
@@ -15,6 +16,7 @@ public class Frame {
 		
 		menuPanel = new Menu(this);
 		settingPanel = new Setting(this, menuPanel);
+		gamePanel = new Game(menuPanel);
 		frame.getContentPane().add(menuPanel);
 		
 		frame.pack();
@@ -24,6 +26,7 @@ public class Frame {
 	public void changePanel(String str) {
 		frame.remove(menuPanel);
 		frame.remove(settingPanel);
+		frame.remove(gamePanel);
 		
 		if(str.equals("menuPanel")) {
 			menuPanel = new Menu(this);
@@ -32,6 +35,10 @@ public class Frame {
 		else if(str.equals("settingPanel")) {
 			settingPanel = new Setting(this, menuPanel);
 			frame.getContentPane().add(settingPanel);
+		}
+		else if(str.equals("gamePanel")) {
+			gamePanel = new Game(menuPanel);
+			frame.getContentPane().add(gamePanel);
 		}
 		
 		frame.pack();

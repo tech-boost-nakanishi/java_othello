@@ -38,14 +38,20 @@ public class Setting extends JPanel implements MouseListener, MouseMotionListene
 		this.addMouseMotionListener(this);
 		this.setLayout(null);
 		
+		changeSetting();
+		
 		String[] faorsacombostr = {"先攻", "後攻"};
 		faorsacombo = new JComboBox<Object>(faorsacombostr);
 		faorsacombo.setBounds(280, 120, 100, 40);
+		if(faorsa.equals("fa")) faorsacombo.setSelectedIndex(0);
+		else if(faorsa.equals("sa")) faorsacombo.setSelectedIndex(1);
 		this.add(faorsacombo);
 		
 		String[] blackorwhitecombostr = {"黒", "白"};
 		blackorwhitecombo = new JComboBox<Object>(blackorwhitecombostr);
 		blackorwhitecombo.setBounds(280, 210, 100, 40);
+		if(blackorwhite.equals("black")) blackorwhitecombo.setSelectedIndex(0);
+		else if(blackorwhite.equals("white")) blackorwhitecombo.setSelectedIndex(1);
 		this.add(blackorwhitecombo);
 		
 		menuEllipse = new Ellipse2D.Double(280, 280, 120, 50);
