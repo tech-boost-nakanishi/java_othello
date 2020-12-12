@@ -16,7 +16,7 @@ public class Frame {
 		
 		menuPanel = new Menu(this);
 		settingPanel = new Setting(this, menuPanel);
-		gamePanel = new Game(menuPanel);
+		gamePanel = new Game(this, menuPanel);
 		frame.getContentPane().add(menuPanel);
 		
 		frame.pack();
@@ -37,7 +37,7 @@ public class Frame {
 			frame.getContentPane().add(settingPanel);
 		}
 		else if(str.equals("gamePanel")) {
-			gamePanel = new Game(menuPanel);
+			gamePanel = new Game(this, menuPanel);
 			frame.getContentPane().add(gamePanel);
 		}
 		
