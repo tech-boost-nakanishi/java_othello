@@ -4,9 +4,9 @@ public class Frame {
 	
 	JFrame frame;
 	
-	Menu menuPanel;
-	Setting settingPanel;
-	Game gamePanel;
+	private Menu menuPanel;
+	private Setting settingPanel;
+	private Game gamePanel;
 	
 	public Frame() {
 		frame = new JFrame();

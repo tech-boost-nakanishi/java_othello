@@ -27,7 +27,7 @@ public class Setting extends JPanel implements MouseListener, MouseMotionListene
 	private Frame frame;
 	private Menu menu;
 	private boolean isChanged = false;
-	private String faorsa, blackorwhite;
+	public static String faorsa, blackorwhite;
 	private static JComboBox<Object> faorsacombo, blackorwhitecombo;
 	
 	public Setting(Frame frame, Menu menu) {

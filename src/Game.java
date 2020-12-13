@@ -21,6 +21,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 	private Frame frame;
 	private String hoveredEllipse = "";
 	public static String[][] board = new String[8][8];
+	public static String playerState, playerWinner;
+	public static boolean isSkipped = false;
 	
 	public Game(Frame frame, Menu menu) {
 		this.frame = frame;
@@ -37,6 +39,28 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 			for(int y = 0; y < board[x].length; y++) {
 				board[x][y] = States.BLANK.toString();
 			}
+		}
+		
+		if(Setting.blackorwhite.equals("black")) {
+			board[3][3] = States.COMPUTER.toString();
+			board[4][3] = States.USER.toString();
+			board[3][4] = States.USER.toString();
+			board[4][4] = States.COMPUTER.toString();
+		}
+		else if(Setting.blackorwhite.equals("white")) {
+			board[3][3] = States.USER.toString();
+			board[4][3] = States.COMPUTER.toString();
+			board[3][4] = States.COMPUTER.toString();
+			board[4][4] = States.USER.toString();
+		}
+		
+		playerWinner = States.BLANK.toString();
+		
+		if(Setting.faorsa.equals("fa")) {
+			playerState = States.USER.toString();
+		}
+		else if(Setting.faorsa.equals("sa")) {
+			playerState = States.COMPUTER.toString();
 		}
 	}
 	
@@ -91,6 +115,57 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 		g2d.drawLine(0, 400, width, 400);
 		g2d.drawLine(0, 480, width, 480);
 		g2d.drawLine(0, 560, width, 560);
+		
+		for(int x = 0; x < board.length; x++) {
+			for(int y = 0; y < board[x].length; y++) {
+				if(board[x][y].equals(States.USER.toString())) {
+					if(Setting.blackorwhite.equals("black")) {
+						drawBlackCircle(g, x, y);
+					}
+					else if(Setting.blackorwhite.equals("white")) {
+						drawWhiteCircle(g, x, y);
+					}
+				}
+				else if(board[x][y].equals(States.COMPUTER.toString())) {
+					if(Setting.blackorwhite.equals("black")) {
+						drawWhiteCircle(g, x, y);
+					}
+					else if(Setting.blackorwhite.equals("white")) {
+						drawBlackCircle(g, x, y);
+					}
+				}
+			}
+		}
+	}
+	
+	public void drawBlackCircle(Graphics g, int x, int y) {
+		Graphics2D g2d = (Graphics2D)g;
+		
+		int xPos = x * (width / 8);
+		int yPos = y * (width / 8);
+		int diff = 3;
+		
+		g2d.setColor(Color.BLACK);
+		g2d.fillOval(xPos + diff, yPos + diff, width / 8 - diff * 2, width / 8 - diff * 2);
+	}
+	
+	public void drawWhiteCircle(Graphics g, int x, int y) {
+		Graphics2D g2d = (Graphics2D)g;
+		
+		int xPos = x * (width / 8);
+		int yPos = y * (width / 8);
+		int diff = 3;
+		
+		g2d.setColor(Color.WHITE);
+		g2d.fillOval(xPos + diff, yPos + diff, width / 8 - diff * 2, width / 8 - diff * 2);
+	}
+	
+	public int getX(int mx) {
+		return (int) mx / (width / 8);
+	}
+	
+	public int getY(int my) {
+		return (int) my / (width / 8);
 	}
 
 	@Override
@@ -134,6 +209,14 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 		}
 		else if(menu.MouseOnOval(mx, my, settingEllipse)) {
 			frame.changePanel("settingPanel");
+		}
+		
+		if(mx >= 0 && mx <= width && my >= 0 && my <= width) {
+			if(playerState.equals(States.USER.toString())) {
+				if(GameLogic.CanPutStone(getX(mx), getY(my), States.USER.toString(), States.CHECK.toString())) {
+					GameLogic.CanPutStone(getX(mx), getY(my), States.USER.toString(), States.CHANGE.toString());
+				}
+			}
 		}
 	}
 
