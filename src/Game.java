@@ -116,9 +116,12 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 		g2d.drawLine(0, 480, width, 480);
 		g2d.drawLine(0, 560, width, 560);
 		
+		int usercount = 0;
+		int computercount = 0;
 		for(int x = 0; x < board.length; x++) {
 			for(int y = 0; y < board[x].length; y++) {
 				if(board[x][y].equals(States.USER.toString())) {
+					usercount++;
 					if(Setting.blackorwhite.equals("black")) {
 						drawBlackCircle(g, x, y);
 					}
@@ -127,6 +130,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 					}
 				}
 				else if(board[x][y].equals(States.COMPUTER.toString())) {
+					computercount++;
 					if(Setting.blackorwhite.equals("black")) {
 						drawWhiteCircle(g, x, y);
 					}
@@ -136,6 +140,18 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 				}
 			}
 		}
+		
+		g2d.setColor(Color.BLACK);
+		g2d.setFont(new Font("arial", Font.BOLD, 16));
+		g2d.drawString("あなた: " + usercount + "   コンピュータ: " + computercount, 430, 690);
+		String str = "";
+		if(playerState.equals(States.USER.toString())) {
+			str = "あなた";
+		}
+		else if(playerState.equals(States.COMPUTER.toString())) {
+			str = "コンピュータ";
+		}
+		g2d.drawString(str + "の番です。", 430, 720);
 	}
 	
 	public void drawBlackCircle(Graphics g, int x, int y) {
@@ -214,10 +230,23 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 		if(mx >= 0 && mx <= width && my >= 0 && my <= width) {
 			if(playerState.equals(States.USER.toString())) {
 				if(GameLogic.CanPutStone(getX(mx), getY(my), States.USER.toString(), States.CHECK.toString())) {
+					isSkipped = false;
 					GameLogic.CanPutStone(getX(mx), getY(my), States.USER.toString(), States.CHANGE.toString());
+					playerState = States.COMPUTER.toString();
+					GameLogic.ComputerLogic();
+				}
+				else {
+					if(isSkipped) {
+						//両方置けないのでゲーム終了
+						playerState = States.BLANK.toString();
+					}
+					else {
+						isSkipped = true;
+					}
 				}
 			}
 		}
+		repaint();
 	}
 
 	@Override
