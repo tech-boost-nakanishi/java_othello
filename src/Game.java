@@ -146,12 +146,15 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 		g2d.drawString("あなた: " + usercount + "   コンピュータ: " + computercount, 430, 690);
 		String str = "";
 		if(playerState.equals(States.USER.toString())) {
-			str = "あなた";
+			str = "あなたの番です。";
 		}
 		else if(playerState.equals(States.COMPUTER.toString())) {
-			str = "コンピュータ";
+			str = "コンピュータの番です。";
 		}
-		g2d.drawString(str + "の番です。", 430, 720);
+		else {
+			str = "";
+		}
+		g2d.drawString(str, 430, 720);
 	}
 	
 	public void drawBlackCircle(Graphics g, int x, int y) {
@@ -227,23 +230,25 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 			frame.changePanel("settingPanel");
 		}
 		
-		if(mx >= 0 && mx <= width && my >= 0 && my <= width) {
-			if(playerState.equals(States.USER.toString())) {
-				if(GameLogic.CanPutStone(getX(mx), getY(my), States.USER.toString(), States.CHECK.toString())) {
-					isSkipped = false;
-					GameLogic.CanPutStone(getX(mx), getY(my), States.USER.toString(), States.CHANGE.toString());
-					playerState = States.COMPUTER.toString();
-					GameLogic.ComputerLogic();
-				}
-				else {
-					if(isSkipped) {
-						//両方置けないのでゲーム終了
-						playerState = States.BLANK.toString();
-					}
-					else {
-						isSkipped = true;
+		if(GameLogic.CanPutStone(States.USER.toString())) {
+			if(mx >= 0 && mx <= width && my >= 0 && my <= width) {
+				if(playerState.equals(States.USER.toString())) {
+					if(GameLogic.PutStone(getX(mx), getY(my), States.USER.toString(), States.CHECK.toString()) > 0) {
+						isSkipped = false;
+						GameLogic.PutStone(getX(mx), getY(my), States.USER.toString(), States.CHANGE.toString());
+						playerState = States.COMPUTER.toString();
+						GameLogic.ComputerLogic();
 					}
 				}
+			}
+		}
+		else {
+			if(isSkipped) {
+				//両方置けないのでゲーム終了
+				playerState = States.BLANK.toString();
+			}
+			else {
+				isSkipped = true;
 			}
 		}
 		repaint();
