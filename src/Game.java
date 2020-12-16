@@ -23,6 +23,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 	public static String[][] board = new String[8][8];
 	public static String playerState, playerWinner;
 	public static boolean isSkipped = false;
+	public static boolean isFinished = false;
 	
 	public Game(Frame frame, Menu menu) {
 		this.frame = frame;
@@ -143,7 +144,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 		
 		g2d.setColor(Color.BLACK);
 		g2d.setFont(new Font("arial", Font.BOLD, 16));
-		g2d.drawString("あなた: " + usercount + "   コンピュータ: " + computercount, 430, 690);
+		g2d.drawString("あなた: " + usercount + "  コンピュータ: " + computercount, 430, 690);
 		String str = "";
 		if(playerState.equals(States.USER.toString())) {
 			str = "あなたの番です。";
@@ -155,8 +156,20 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 			str = "";
 		}
 		g2d.drawString(str, 430, 720);
+		
+		if(isFinished()) {
+			drawResult(g, usercount, computercount);
+		}
 	}
 	
+	public static boolean isFinished() {
+		return isFinished;
+	}
+
+	public static void setFinished(boolean isFinished) {
+		Game.isFinished = isFinished;
+	}
+
 	public void drawBlackCircle(Graphics g, int x, int y) {
 		Graphics2D g2d = (Graphics2D)g;
 		
@@ -177,6 +190,21 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 		
 		g2d.setColor(Color.WHITE);
 		g2d.fillOval(xPos + diff, yPos + diff, width / 8 - diff * 2, width / 8 - diff * 2);
+	}
+	
+	public void drawResult(Graphics g, int uc, int cc) {
+		Graphics2D g2d = (Graphics2D)g;
+		
+		g2d.setColor(new Color(0, 0, 0, 200));
+		g2d.fillRect(0, 0, width, width);
+		
+		g2d.setColor(Color.WHITE);
+		g2d.setFont(new Font("arial", Font.BOLD, 26));
+		String str;
+		if(uc > cc) str = "あなたの勝ちです。";
+		else if(uc < cc) str = "あなたの負けです。";
+		else str = "引き分けです。";
+		g2d.drawString(str, width / 2 - g2d.getFontMetrics().stringWidth(str) / 2, width / 2 + g2d.getFontMetrics().getAscent());
 	}
 	
 	public int getX(int mx) {
@@ -245,6 +273,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 		else {
 			if(isSkipped) {
 				//両方置けないのでゲーム終了
+				setFinished(true);
 				playerState = States.BLANK.toString();
 			}
 			else {

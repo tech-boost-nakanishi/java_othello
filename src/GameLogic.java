@@ -10,10 +10,9 @@ public class GameLogic {
 		int index = 0;
 		int dx, dy;
 		int[][] flipstones;
-		String opponent = null;
+		String opponent = States.BLANK.toString();
 		if(player.equals(States.USER.toString())) opponent = States.COMPUTER.toString();
 		else if(player.equals(States.COMPUTER.toString())) opponent = States.USER.toString();
-		else States.BLANK.toString();
 		
 		//上方向
 		dx = x;
@@ -22,10 +21,10 @@ public class GameLogic {
 		flipstones = new int[64][];
 		while(true) {
 			dy--;
-			if(dy < 0 || dy > 8) {
+			if(dx < 0 || dy < 0 || dx >= Game.board.length || dy >= Game.board.length) {
 				break;
 			}
-			if(Game.board[dx][dy].equals(States.BLANK.toString()) || Game.board[dx][dy] == null) {
+			if(Game.board[dx][dy].equals(States.BLANK.toString())) {
 				break;
 			}
 			else {
@@ -50,10 +49,182 @@ public class GameLogic {
 		flipstones = new int[64][];
 		while(true) {
 			dy++;
-			if(dy < 0 || dy > 8) {
+			if(dx < 0 || dy < 0 || dx >= Game.board.length || dy >= Game.board.length) {
 				break;
 			}
-			if(Game.board[dx][dy].equals(States.BLANK.toString()) || Game.board[dx][dy] == null) {
+			if(Game.board[dx][dy].equals(States.BLANK.toString())) {
+				break;
+			}
+			else {
+				if(Game.board[dx][dy].equals(player)) {
+					count += index;
+					if(mode.equals(States.CHANGE.toString())) {
+						flipStones(flipstones, player);
+					}
+					break;
+				}
+				else if(Game.board[dx][dy].equals(opponent)) {
+					flipstones[index] = new int[] {dx, dy};
+					index++;
+				}
+			}
+		}
+		
+		//右方向
+		dx = x;
+		dy = y;
+		index = 0;
+		flipstones = new int[64][];
+		while(true) {
+			dx++;
+			if(dx < 0 || dy < 0 || dx >= Game.board.length || dy >= Game.board.length) {
+				break;
+			}
+			if(Game.board[dx][dy].equals(States.BLANK.toString())) {
+				break;
+			}
+			else {
+				if(Game.board[dx][dy].equals(player)) {
+					count += index;
+					if(mode.equals(States.CHANGE.toString())) {
+						flipStones(flipstones, player);
+					}
+					break;
+				}
+				else if(Game.board[dx][dy].equals(opponent)) {
+					flipstones[index] = new int[] {dx, dy};
+					index++;
+				}
+			}
+		}
+		
+		//左方向
+		dx = x;
+		dy = y;
+		index = 0;
+		flipstones = new int[64][];
+		while(true) {
+			dx--;
+			if(dx < 0 || dy < 0 || dx >= Game.board.length || dy >= Game.board.length) {
+				break;
+			}
+			if(Game.board[dx][dy].equals(States.BLANK.toString())) {
+				break;
+			}
+			else {
+				if(Game.board[dx][dy].equals(player)) {
+					count += index;
+					if(mode.equals(States.CHANGE.toString())) {
+						flipStones(flipstones, player);
+					}
+					break;
+				}
+				else if(Game.board[dx][dy].equals(opponent)) {
+					flipstones[index] = new int[] {dx, dy};
+					index++;
+				}
+			}
+		}
+		
+		//左斜め上方向
+		dx = x;
+		dy = y;
+		index = 0;
+		flipstones = new int[64][];
+		while(true) {
+			dx--;
+			dy--;
+			if(dx < 0 || dy < 0 || dx >= Game.board.length || dy >= Game.board.length) {
+				break;
+			}
+			if(Game.board[dx][dy].equals(States.BLANK.toString())) {
+				break;
+			}
+			else {
+				if(Game.board[dx][dy].equals(player)) {
+					count += index;
+					if(mode.equals(States.CHANGE.toString())) {
+						flipStones(flipstones, player);
+					}
+					break;
+				}
+				else if(Game.board[dx][dy].equals(opponent)) {
+					flipstones[index] = new int[] {dx, dy};
+					index++;
+				}
+			}
+		}
+		
+		//左斜め下方向
+		dx = x;
+		dy = y;
+		index = 0;
+		flipstones = new int[64][];
+		while(true) {
+			dx--;
+			dy++;
+			if(dx < 0 || dy < 0 || dx >= Game.board.length || dy >= Game.board.length) {
+				break;
+			}
+			if(Game.board[dx][dy].equals(States.BLANK.toString())) {
+				break;
+			}
+			else {
+				if(Game.board[dx][dy].equals(player)) {
+					count += index;
+					if(mode.equals(States.CHANGE.toString())) {
+						flipStones(flipstones, player);
+					}
+					break;
+				}
+				else if(Game.board[dx][dy].equals(opponent)) {
+					flipstones[index] = new int[] {dx, dy};
+					index++;
+				}
+			}
+		}
+		
+		//右斜め上方向
+		dx = x;
+		dy = y;
+		index = 0;
+		flipstones = new int[64][];
+		while(true) {
+			dx++;
+			dy--;
+			if(dx < 0 || dy < 0 || dx >= Game.board.length || dy >= Game.board.length) {
+				break;
+			}
+			if(Game.board[dx][dy].equals(States.BLANK.toString())) {
+				break;
+			}
+			else {
+				if(Game.board[dx][dy].equals(player)) {
+					count += index;
+					if(mode.equals(States.CHANGE.toString())) {
+						flipStones(flipstones, player);
+					}
+					break;
+				}
+				else if(Game.board[dx][dy].equals(opponent)) {
+					flipstones[index] = new int[] {dx, dy};
+					index++;
+				}
+			}
+		}
+		
+		//右斜め下方向
+		dx = x;
+		dy = y;
+		index = 0;
+		flipstones = new int[64][];
+		while(true) {
+			dx++;
+			dy++;
+			if(dx < 0 || dy < 0 || dx >= Game.board.length || dy >= Game.board.length) {
+				break;
+			}
+			if(Game.board[dx][dy].equals(States.BLANK.toString())) {
 				break;
 			}
 			else {
@@ -83,10 +254,12 @@ public class GameLogic {
 		if(!CanPutStone(States.COMPUTER.toString())) {
 			if(Game.isSkipped) {
 				//両方置けないのでゲーム終了
+				Game.setFinished(true);
 				Game.playerState = States.BLANK.toString();
 			}
 			else {
 				Game.isSkipped = true;
+				Game.playerState = States.USER.toString();
 			}
 			return;
 		}
