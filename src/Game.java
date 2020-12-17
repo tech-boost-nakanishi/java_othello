@@ -21,9 +21,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 	private Frame frame;
 	private String hoveredEllipse = "";
 	public static String[][] board = new String[8][8];
-	public static String playerState, playerWinner;
-	public static boolean isSkipped = false;
-	public static boolean isFinished = false;
+	public static String playerState;
+	public static int failedcount = 0;
 	
 	public Game(Frame frame, Menu menu) {
 		this.frame = frame;
@@ -54,8 +53,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 			board[3][4] = States.COMPUTER.toString();
 			board[4][4] = States.USER.toString();
 		}
-		
-		playerWinner = States.BLANK.toString();
 		
 		if(Setting.faorsa.equals("fa")) {
 			playerState = States.USER.toString();
@@ -157,17 +154,9 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 		}
 		g2d.drawString(str, 430, 720);
 		
-		if(isFinished()) {
+		if(failedcount == 2) {
 			drawResult(g, usercount, computercount);
 		}
-	}
-	
-	public static boolean isFinished() {
-		return isFinished;
-	}
-
-	public static void setFinished(boolean isFinished) {
-		Game.isFinished = isFinished;
 	}
 
 	public void drawBlackCircle(Graphics g, int x, int y) {
@@ -262,7 +251,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 			if(mx >= 0 && mx <= width && my >= 0 && my <= width) {
 				if(playerState.equals(States.USER.toString())) {
 					if(GameLogic.PutStone(getX(mx), getY(my), States.USER.toString(), States.CHECK.toString()) > 0) {
-						isSkipped = false;
+						failedcount = 0;
 						GameLogic.PutStone(getX(mx), getY(my), States.USER.toString(), States.CHANGE.toString());
 						playerState = States.COMPUTER.toString();
 						GameLogic.ComputerLogic();
@@ -271,13 +260,14 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 			}
 		}
 		else {
-			if(isSkipped) {
+			failedcount++;
+			if(failedcount == 2) {
 				//両方置けないのでゲーム終了
-				setFinished(true);
 				playerState = States.BLANK.toString();
 			}
 			else {
-				isSkipped = true;
+				playerState = States.COMPUTER.toString();
+				GameLogic.ComputerLogic();
 			}
 		}
 		repaint();

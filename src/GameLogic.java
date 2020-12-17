@@ -252,13 +252,12 @@ public class GameLogic {
 //		}
 		
 		if(!CanPutStone(States.COMPUTER.toString())) {
-			if(Game.isSkipped) {
+			Game.failedcount++;
+			if(Game.failedcount == 2) {
 				//両方置けないのでゲーム終了
-				Game.setFinished(true);
 				Game.playerState = States.BLANK.toString();
 			}
 			else {
-				Game.isSkipped = true;
 				Game.playerState = States.USER.toString();
 			}
 			return;
@@ -277,7 +276,7 @@ public class GameLogic {
 			}
 		}
 		
-		Game.isSkipped = false;
+		Game.failedcount = 0;
 		Random rand = new Random();
 		int r;
 		while(true) {
