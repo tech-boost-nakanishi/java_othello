@@ -245,22 +245,10 @@ public class GameLogic {
 	}
 	
 	public static void ComputerLogic() {
-//		try {
-//			Thread.sleep(1000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-		
-		if(!CanPutStone(States.COMPUTER.toString())) {
-			Game.failedcount++;
-			if(Game.failedcount == 2) {
-				//両方置けないのでゲーム終了
-				Game.playerState = States.BLANK.toString();
-			}
-			else {
-				Game.playerState = States.USER.toString();
-			}
-			return;
+		try {
+			Thread.sleep(300);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 		
 		int[][] blank = new int[64][];
@@ -276,7 +264,6 @@ public class GameLogic {
 			}
 		}
 		
-		Game.failedcount = 0;
 		Random rand = new Random();
 		int r;
 		while(true) {
@@ -286,7 +273,6 @@ public class GameLogic {
 			}
 			else {
 				PutStone(blank[r][0], blank[r][1], States.COMPUTER.toString(), States.CHANGE.toString());
-				Game.playerState = States.USER.toString();
 				break;
 			}
 		}
@@ -307,8 +293,10 @@ public class GameLogic {
 		int count = 0;
 		for(int x = 0; x < Game.board.length; x++) {
 			for(int y = 0; y < Game.board[x].length; y++) {
-				if(PutStone(x, y, player, States.CHECK.toString()) > 0) {
-					count++;
+				if(Game.board[x][y].equals(States.BLANK.toString())) {
+					if(PutStone(x, y, player, States.CHECK.toString()) > 0) {
+						count++;
+					}
 				}
 			}
 		}

@@ -11,7 +11,7 @@ import java.awt.geom.Ellipse2D;
 
 import javax.swing.JPanel;
 
-public class Game extends JPanel implements MouseListener, MouseMotionListener {
+public class Game extends JPanel implements MouseListener, MouseMotionListener, Runnable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -22,11 +22,15 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 	private String hoveredEllipse = "";
 	public static String[][] board = new String[8][8];
 	public static String playerState;
-	public static int failedcount = 0;
+	public boolean running;
+	private boolean userPut = false;
+	private Thread th;
+	private static int failedcount = 0;
 	
-	public Game(Frame frame, Menu menu) {
+	public Game(Frame frame, Menu menu, boolean running) {
 		this.frame = frame;
 		this.menu = menu;
+		this.running = running;
 		this.setPreferredSize(new Dimension(width, height));
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
@@ -60,6 +64,9 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 		else if(Setting.faorsa.equals("sa")) {
 			playerState = States.COMPUTER.toString();
 		}
+		
+		th = new Thread(this);
+		th.start();
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -150,7 +157,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 			str = "コンピュータの番です。";
 		}
 		else {
-			str = "";
+			str = "ゲーム終了!";
 		}
 		g2d.drawString(str, 430, 720);
 		
@@ -247,27 +254,12 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 			frame.changePanel("settingPanel");
 		}
 		
-		if(GameLogic.CanPutStone(States.USER.toString())) {
+		if(playerState.equals(States.USER.toString())) {
 			if(mx >= 0 && mx <= width && my >= 0 && my <= width) {
-				if(playerState.equals(States.USER.toString())) {
-					if(GameLogic.PutStone(getX(mx), getY(my), States.USER.toString(), States.CHECK.toString()) > 0) {
-						failedcount = 0;
-						GameLogic.PutStone(getX(mx), getY(my), States.USER.toString(), States.CHANGE.toString());
-						playerState = States.COMPUTER.toString();
-						GameLogic.ComputerLogic();
-					}
+				if(GameLogic.PutStone(getX(mx), getY(my), States.USER.toString(), States.CHECK.toString()) > 0) {
+					userPut = true;
+					GameLogic.PutStone(getX(mx), getY(my), States.USER.toString(), States.CHANGE.toString());
 				}
-			}
-		}
-		else {
-			failedcount++;
-			if(failedcount == 2) {
-				//両方置けないのでゲーム終了
-				playerState = States.BLANK.toString();
-			}
-			else {
-				playerState = States.COMPUTER.toString();
-				GameLogic.ComputerLogic();
 			}
 		}
 		repaint();
@@ -286,6 +278,48 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 	@Override
 	public void mouseExited(MouseEvent e) {
 		
+	}
+
+	@Override
+	public void run() {
+		while(running) {
+			if(playerState.equals(States.USER.toString())) {
+				if(GameLogic.CanPutStone(States.USER.toString())) {
+					failedcount = 0;
+					while(true) {
+						if(userPut) break;
+						playerState = States.USER.toString();
+					}
+				}
+				else {
+					failedcount++;
+				}
+				playerState = States.COMPUTER.toString();
+			}
+			else if(playerState.equals(States.COMPUTER.toString())) {
+				if(GameLogic.CanPutStone(States.COMPUTER.toString())) {
+					failedcount = 0;
+					GameLogic.ComputerLogic();
+				}
+				else {
+					failedcount++;
+				}
+				playerState = States.USER.toString();
+			}
+			repaint();
+			userPut = false;
+			if(failedcount == 2) {
+				playerState = States.BLANK.toString();
+				repaint();
+				break;
+			}
+		}
+		try {
+			th.join();
+			repaint();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
